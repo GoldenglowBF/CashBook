@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, font
-from modules.record import add_record, load_records
+from modules.record import add_record, load_records, save_records, delete_record  # 确保delete_record函数在modules.record中
 from modules.view import get_recent_records
 from modules.statistics import calculate_statistics
 import matplotlib.pyplot as plt
@@ -9,6 +9,7 @@ import matplotlib as mpl
 
 mpl.rcParams['font.sans-serif'] = ['SimHei']  # 设置中文字体为黑体
 mpl.rcParams['axes.unicode_minus'] = False
+
 class LoginWindow:
     def __init__(self):
         self.login_root = tk.Tk()
@@ -91,6 +92,9 @@ class PersonalAccountingApp:
         stats_button = tk.Button(button_frame, text="显示统计信息", command=self.show_statistics, bg="#FF9800", fg="white", font=label_font, width=20)
         stats_button.grid(row=0, column=2, padx=10)
 
+        delete_button = tk.Button(button_frame, text="删除记录", command=self.create_delete_window, bg="#F44336", fg="white", font=label_font, width=20)
+        delete_button.grid(row=0, column=3, padx=10)
+
     def submit_record(self):
         """获取输入并添加记录."""
         date = self.date_entry.get()
@@ -124,6 +128,29 @@ class PersonalAccountingApp:
             for record in records:
                 record_text = f"日期: {record['date']}, 金额: {record['amount']}, 类别: {record['category']}, 备注: {record['note']}"
                 tk.Label(view_window, text=record_text, bg='#f0f8ff').pack()
+
+    def create_delete_window(self):
+        """创建删除记录的窗口."""
+        delete_window = tk.Toplevel()
+        delete_window.title("删除记账记录")
+        delete_window.geometry("300x150")
+        delete_window.configure(bg='#f0f8ff')
+
+        tk.Label(delete_window, text="输入要删除的记录日期 (YYYY-MM-DD):", bg='#f0f8ff', font=('Arial', 12)).pack(pady=10)
+        date_entry = tk.Entry(delete_window, width=30)
+        date_entry.pack(pady=5)
+
+        delete_button = tk.Button(delete_window, text="删除", command=lambda: self.delete_record(date_entry.get()), bg="#F44336", fg="white")
+        delete_button.pack(pady=10)
+
+    def delete_record(self, date):
+        """删除指定日期的记录."""
+        success = delete_record(date)  # 调用modules.record中的delete_record函数
+        print(f"删除操作返回值: {success}")  # 调试输出
+        if success:
+            messagebox.showinfo("成功", "记录已删除！")
+        else:
+            messagebox.showerror("错误", "未找到指定的记录！")
 
     def show_statistics(self):
         """显示统计信息和可视化图表."""
