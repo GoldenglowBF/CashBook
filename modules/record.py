@@ -4,6 +4,14 @@ import os
 # 定义数据文件的名称
 DATA_FILE = 'data/records.json'
 
+def record_1_json():
+    global DATA_FILE
+    DATA_FILE = 'data/records.json'
+
+def record_2_json():
+    global DATA_FILE
+    DATA_FILE = 'data/records_1.json'
+
 def load_records():
     """加载已有记录."""
     if os.path.exists(DATA_FILE):

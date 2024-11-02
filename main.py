@@ -1,8 +1,13 @@
+import json
 import tkinter as tk
 from tkinter import messagebox, font
-from modules.record import add_record, load_records, save_records, delete_record
+from modules.record import add_record, load_records, save_records, delete_record, record_2_json
 from modules.view import get_recent_records
 from modules.statistics import calculate_statistics
+from modules.record import record_1_json
+from modules.record import record_2_json
+from modules.view import load_1_json
+from modules.view import load_2_json
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib as mpl
@@ -68,7 +73,9 @@ class PersonalAccountingApp:
         info_button.grid(row=0, column=4, padx=10)
 
         # 初始化用户字典
-        self.users = {}
+        self.userf = {}
+        with open('data/un_pw.json','r') as f:
+            self.userf = json.load(f)
 
     def show_login_window(self):
         # 设置字体
@@ -77,7 +84,7 @@ class PersonalAccountingApp:
         """显示登录窗口."""
         login_window = tk.Toplevel(self.root)
         login_window.title("登录")
-        login_window.geometry("300x250")
+        login_window.geometry("300x300")
         login_window.configure(bg='#f0f8ff')
 
         tk.Label(login_window, text="用户名:", font=label_font, bg='#f0f8ff').pack(pady=10)
@@ -91,7 +98,7 @@ class PersonalAccountingApp:
         def login():
             username = username_entry.get()
             password = password_entry.get()
-            if username in self.users and self.users[username] == password:
+            if username in self.userf and self.userf[username] == password:
                 messagebox.showinfo("登录成功", "欢迎回来！")
                 login_window.destroy()
                 self.root.deiconify()  # 显示主窗口
@@ -127,11 +134,15 @@ class PersonalAccountingApp:
         def register():
             username = username_entry.get()
             password = password_entry.get()
-            if username in self.users:
+            if username in self.userf:
                 messagebox.showerror("注册失败", "用户名已存在。")
             else:
-                self.users[username] = password
+                users = {}
+                users[username] = password
+                self.userf.update(users)
                 messagebox.showinfo("注册成功", "注册成功！")
+                with open('data/un_pw.json', 'w') as f:
+                    json.dump(self.userf, f)
                 register_window.destroy()  # 关闭注册窗口
 
         register_button = tk.Button(register_window, text="注册", command=register, bg="#4CAF50", fg="white",
@@ -275,12 +286,38 @@ class PersonalAccountingApp:
         save_button = tk.Button(info_window, text="保存信息", command=self.save_info, bg="#4CAF50", fg="white", font=label_font)
         save_button.grid(row=4, column=1, padx=5, pady=10)
 
+        cj_button = tk.Button(info_window, text="更改账本", command=self.change_json_window, bg="#4CAF50", fg="white", font=label_font)
+        cj_button.grid(row=5, column=1, padx=5, pady=10)
+
     def save_info(self):
         name = self.name_entry.get()
         email = self.email_entry.get()
         phone = self.phone_entry.get()
         # 这里可以添加保存信息的逻辑，例如保存到文件或数据库
         messagebox.showinfo("成功", "个人信息已保存！")
+
+    def change_json_window(self):
+        cj_window = tk.Toplevel()
+        cj_window.title("更改账本")
+        cj_window.geometry("500x300")
+        cj_window.configure(bg='#f0f8ff')
+        label_font = font.Font(family='Arial', size=12)
+
+        tk.Label(cj_window, text="选择要使用的账本", bg='#f0f8ff', font=('Arial', 12)).pack(pady=10)
+        j1_button = tk.Button(cj_window, text="账本1", command=self.set_json1, bg="#4CAF50", fg="white",font=label_font)
+        j1_button.pack(pady=10)
+        j2_button = tk.Button(cj_window, text="账本2", command=self.set_json2, bg="#4CAF50", fg="white", font=label_font)
+        j2_button.pack(pady=10)
+
+    def set_json1(self):
+            record_1_json()
+            load_1_json()
+
+    def set_json2(self):
+            record_2_json()
+            load_2_json()
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
