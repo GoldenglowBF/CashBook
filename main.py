@@ -235,6 +235,17 @@ class PersonalAccountingApp:
 
         note = self.note_entry.get()
 
+        def is_valid_date(date_str):
+            try:
+                datetime.strptime(date_str, '%Y-%m-%d')
+                return True
+            except ValueError:
+                return False
+
+        if not is_valid_date(date):
+            messagebox.showinfo('请正确输入日期！')
+            return
+            
         add_record(date, amount, category, note)
 
         self.date_entry.delete(0, tk.END)
