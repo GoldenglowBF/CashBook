@@ -22,61 +22,76 @@ class PersonalAccountingApp:
         self.root = root
         self.root.title("个人记账本")
         self.root.geometry("700x400")
-        self.root.configure(bg='#f0f8ff')
+        self.root.configure(bg='#FFF8F0')
 
+        # 设置字体
         title_font = font.Font(family='Arial', size=16, weight='bold')
         label_font = font.Font(family='Arial', size=12)
 
-        tk.Label(root, text="记账本", font=title_font, bg='#f0f8ff', fg='#4B0082').pack(pady=20)
+        # 应用莫兰迪色系
+        tk.Label(root, text="记账本", font=title_font, bg='#FFF8F0', fg='#8E8371').pack(pady=20)
 
-        frame = tk.Frame(root, bg='#f0f8ff')
+        frame = tk.Frame(root, bg='#FFF8F0')
         frame.pack(pady=10)
 
-        tk.Label(frame, text="日期 (YYYY-MM-DD):", font=label_font, bg='#f0f8ff').grid(row=0, column=0, padx=5, pady=5)
-        self.date_entry = tk.Entry(frame, width=40, font=label_font)
+        tk.Label(frame, text="日期 (YYYY-MM-DD):", font=label_font, bg='#FFF8F0', fg='#8E8371').grid(row=0, column=0, padx=5, pady=5)
+        self.date_entry = tk.Entry(frame, width=40, font=label_font, fg='#5A5A58', bg='#DAD5C1')
         self.date_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        tk.Label(frame, text="金额:", font=label_font, bg='#f0f8ff').grid(row=1, column=0, padx=5, pady=5)
-        self.amount_entry = tk.Entry(frame, width=40, font=label_font)
+        tk.Label(frame, text="金额:", font=label_font, bg='#FFF8F0', fg='#8E8371').grid(row=1, column=0, padx=5, pady=5)
+        self.amount_entry = tk.Entry(frame, width=40, font=label_font, fg='#5A5A58', bg='#DAD5C1')
         self.amount_entry.grid(row=1, column=1, padx=5, pady=5)
 
-        tk.Label(frame, text="类别:", font=label_font, bg='#f0f8ff').grid(row=2, column=0, padx=5, pady=5)
-
-        # 定义类别选项
-        self.category_var = tk.StringVar()
-        self.category_var.set("选择类别")  # 设置默认值
-
-        # 创建下拉选择框
-        category_options = ["饮食", "交通", "服饰", "医疗", "娱乐", "其他"]  # 这里可以添加更多类别
+        tk.Label(frame, text="类别:", font=label_font, bg='#FFF8F0', fg='#8E8371').grid(row=2, column=0, padx=5, pady=5)
+        self.category_var = tk.StringVar(value="选择类别")
+        category_options = ["饮食", "交通", "服饰", "医疗", "娱乐", "其他"]
         self.category_menu = tk.OptionMenu(frame, self.category_var, *category_options)
+        self.category_menu.config(fg='#5A5A58', bg='#DAD5C1', font=label_font)
         self.category_menu.grid(row=2, column=1, padx=5, pady=5)
 
-        tk.Label(frame, text="备注:", font=label_font, bg='#f0f8ff').grid(row=3, column=0, padx=5, pady=5)
-        self.note_entry = tk.Entry(frame, width=40, font=label_font)
+        tk.Label(frame, text="备注:", font=label_font, bg='#FFF8F0', fg='#8E8371').grid(row=3, column=0, padx=5, pady=5)
+        self.note_entry = tk.Entry(frame, width=40, font=label_font, fg='#5A5A58', bg='#DAD5C1')
         self.note_entry.grid(row=3, column=1, padx=5, pady=5)
 
-        button_frame = tk.Frame(root, bg='#f0f8ff')
+        button_frame = tk.Frame(root, bg='#FFF8F0')
         button_frame.pack(pady=20)
 
-        submit_button = tk.Button(button_frame, text="添加记录", command=self.submit_record, bg="#4CAF50", fg="white", font=label_font, width=20)
-        submit_button.grid(row=0, column=0, padx=10)
+        # 替换颜色并设置按钮为圆角
+        submit_button = tk.Button(button_frame, text="添加记录", command=self.submit_record, 
+                                bg="#FFB6C1", fg="white", font=label_font, width=20, relief="groove", bd=2)
+        submit_button.config(highlightbackground="#FFB6C1", highlightthickness=0, bd=0, relief="flat")
+        submit_button.grid(row=0, column=0, padx=10, pady=5)
+        submit_button.configure(borderwidth=1, highlightbackground="#FFB6C1", border=1)
 
-        view_button = tk.Button(button_frame, text="查看最近记录", command=self.create_view_window, bg="#2196F3", fg="white", font=label_font, width=20)
-        view_button.grid(row=0, column=1, padx=10)
+        view_button = tk.Button(button_frame, text="查看最近记录", command=self.create_view_window, 
+                                bg="#B5D3E7", fg="white", font=label_font, width=20, relief="groove", bd=2)
+        view_button.config(highlightbackground="#B5D3E7", highlightthickness=0, bd=0, relief="flat")
+        view_button.grid(row=0, column=1, padx=10, pady=5)
 
-        stats_button = tk.Button(button_frame, text="显示统计信息", command=self.show_statistics, bg="#FF9800", fg="white", font=label_font, width=20)
-        stats_button.grid(row=0, column=2, padx=10)
+        stats_button = tk.Button(button_frame, text="显示统计信息", command=self.show_statistics, 
+                                bg="#F5CBA7", fg="white", font=label_font, width=20, relief="groove", bd=2)
+        stats_button.config(highlightbackground="#F5CBA7", highlightthickness=0, bd=0, relief="flat")
+        stats_button.grid(row=0, column=2, padx=10, pady=5)
 
-        delete_button = tk.Button(button_frame, text="删除记录", command=self.create_delete_window, bg="#F44336", fg="white", font=label_font, width=20)
-        delete_button.grid(row=0, column=3, padx=10)
+        delete_button = tk.Button(button_frame, text="删除记录", command=self.create_delete_window, 
+                                bg="#D7BDE2", fg="white", font=label_font, width=20, relief="groove", bd=2)
+        delete_button.config(highlightbackground="#D7BDE2", highlightthickness=0, bd=0, relief="flat")
+        delete_button.grid(row=1, column=0, padx=10, pady=5)
 
-        # 添加个人信息按钮
-        info_button = tk.Button(button_frame, text="个人信息", command=self.create_info_window, bg="#2196F3", fg="white", font=label_font, width=20)
-        info_button.grid(row=0, column=4, padx=10)
-        # 添加收支趋势分析按钮
-        trends_button = tk.Button(button_frame, text="收支趋势分析", command=self.create_trend_analysis_window, bg="#FF5722",
-                                  fg="white", font=label_font, width=20)
-        trends_button.grid(row=0, column=5, padx=10)
+        info_button = tk.Button(button_frame, text="个人信息", command=self.create_info_window, 
+                                bg="#AED6F1", fg="white", font=label_font, width=20, relief="groove", bd=2)
+        info_button.config(highlightbackground="#AED6F1", highlightthickness=0, bd=0, relief="flat")
+        info_button.grid(row=1, column=1, padx=10, pady=5)
+
+        trends_button = tk.Button(button_frame, text="收支趋势分析", command=self.create_trend_analysis_window, 
+                                bg="#A9DFBF", fg="white", font=label_font, width=20, relief="groove", bd=2)
+        trends_button.config(highlightbackground="#A9DFBF", highlightthickness=0, bd=0, relief="flat")
+        trends_button.grid(row=1, column=2, padx=10, pady=5)
+
+        # 将这些按钮的边框设置为圆角样式
+        for button in [submit_button, view_button, stats_button, delete_button, info_button, trends_button]:
+            button.configure(font=('Arial', 12, 'bold'), relief='solid', borderwidth=0, highlightthickness=0)
+
 
         # 初始化用户字典
         self.userf = {}
@@ -88,13 +103,13 @@ class PersonalAccountingApp:
         trend_window = tk.Toplevel()
         trend_window.title("收支趋势分析")
         trend_window.geometry("600x400")
-        trend_window.configure(bg='#f0f8ff')
+        trend_window.configure(bg='#FFF8F0')
 
-        tk.Label(trend_window, text="开始日期 (YYYY-MM-DD):", bg='#f0f8ff').pack(pady=10)
+        tk.Label(trend_window, text="开始日期 (YYYY-MM-DD):", bg='#FFF8F0').pack(pady=10)
         start_date_entry = tk.Entry(trend_window, width=20)
         start_date_entry.pack(pady=5)
 
-        tk.Label(trend_window, text="结束日期 (YYYY-MM-DD):", bg='#f0f8ff').pack(pady=10)
+        tk.Label(trend_window, text="结束日期 (YYYY-MM-DD):", bg='#FFF8F0').pack(pady=10)
         end_date_entry = tk.Entry(trend_window, width=20)
         end_date_entry.pack(pady=5)
 
@@ -149,13 +164,13 @@ class PersonalAccountingApp:
         login_window = tk.Toplevel(self.root)
         login_window.title("登录")
         login_window.geometry("300x300")
-        login_window.configure(bg='#f0f8ff')
+        login_window.configure(bg='#FFF8F0')
 
-        tk.Label(login_window, text="用户名:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        tk.Label(login_window, text="用户名:", font=label_font, bg='#FFF8F0').pack(pady=10)
         username_entry = tk.Entry(login_window, font=label_font)
         username_entry.pack(pady=10)
 
-        tk.Label(login_window, text="密码:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        tk.Label(login_window, text="密码:", font=label_font, bg='#FFF8F0').pack(pady=10)
         password_entry = tk.Entry(login_window, show="*", font=label_font)
         password_entry.pack(pady=10)
 
@@ -185,13 +200,13 @@ class PersonalAccountingApp:
         register_window = tk.Toplevel(self.root)
         register_window.title("注册")
         register_window.geometry("300x250")
-        register_window.configure(bg='#f0f8ff')
+        register_window.configure(bg='#FFF8F0')
 
-        tk.Label(register_window, text="用户名:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        tk.Label(register_window, text="用户名:", font=label_font, bg='#FFF8F0').pack(pady=10)
         username_entry = tk.Entry(register_window, font=label_font)
         username_entry.pack(pady=10)
 
-        tk.Label(register_window, text="密码:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        tk.Label(register_window, text="密码:", font=label_font, bg='#FFF8F0').pack(pady=10)
         password_entry = tk.Entry(register_window, show="*", font=label_font)
         password_entry.pack(pady=10)
 
@@ -233,24 +248,24 @@ class PersonalAccountingApp:
         view_window = tk.Toplevel()
         view_window.title("最近记账记录")
         view_window.geometry("500x300")
-        view_window.configure(bg='#f0f8ff')
+        view_window.configure(bg='#FFF8F0')
 
         records = get_recent_records()
         if not records:
-            tk.Label(view_window, text="没有记录可显示。", bg='#f0f8ff', font=('Arial', 12)).pack(pady=10)
+            tk.Label(view_window, text="没有记录可显示。", bg='#FFF8F0', font=('Arial', 12)).pack(pady=10)
         else:
-            tk.Label(view_window, text="最近的记录:", font=('Arial', 14), bg='#f0f8ff').pack(pady=10)
+            tk.Label(view_window, text="最近的记录:", font=('Arial', 14), bg='#FFF8F0').pack(pady=10)
             for record in records:
                 record_text = f"日期: {record['date']}, 金额: {record['amount']}, 类别: {record['category']}, 备注: {record['note']}"
-                tk.Label(view_window, text=record_text, bg='#f0f8ff').pack()
+                tk.Label(view_window, text=record_text, bg='#FFF8F0').pack()
 
     def create_delete_window(self):
         delete_window = tk.Toplevel()
         delete_window.title("删除记账记录")
         delete_window.geometry("500x300")
-        delete_window.configure(bg='#f0f8ff')
+        delete_window.configure(bg='#FFF8F0')
 
-        tk.Label(delete_window, text="选择要删除的记录:", bg='#f0f8ff', font=('Arial', 12)).pack(pady=10)
+        tk.Label(delete_window, text="选择要删除的记录:", bg='#FFF8F0', font=('Arial', 12)).pack(pady=10)
 
         self.record_listbox = tk.Listbox(delete_window, width=60, height=10)
         records = load_records()
@@ -285,18 +300,18 @@ class PersonalAccountingApp:
         stats_window = tk.Toplevel()
         stats_window.title("统计信息")
         stats_window.geometry("1000x600")
-        stats_window.configure(bg='#f0f8ff')
+        stats_window.configure(bg='#FFF8F0')
 
-        tk.Label(stats_window, text=f"总收入: {total_income}", font=('Arial', 14), bg='#f0f8ff').pack(pady=10)
-        tk.Label(stats_window, text=f"总支出: {total_expense}", font=('Arial', 14), bg='#f0f8ff').pack(pady=10)
+        tk.Label(stats_window, text=f"总收入: {total_income}", font=('Arial', 14), bg='#FFF8F0').pack(pady=10)
+        tk.Label(stats_window, text=f"总支出: {total_expense}", font=('Arial', 14), bg='#FFF8F0').pack(pady=10)
 
-        tk.Label(stats_window, text="各类别收入:", font=('Arial', 14), bg='#f0f8ff').pack(pady=10)
+        tk.Label(stats_window, text="各类别收入:", font=('Arial', 14), bg='#FFF8F0').pack(pady=10)
         for category, amount in income_categories.items():
-            tk.Label(stats_window, text=f"  {category}: {amount}", bg='#f0f8ff').pack()
+            tk.Label(stats_window, text=f"  {category}: {amount}", bg='#FFF8F0').pack()
 
-        tk.Label(stats_window, text="各类别支出:", font=('Arial', 14), bg='#f0f8ff').pack(pady=10)
+        tk.Label(stats_window, text="各类别支出:", font=('Arial', 14), bg='#FFF8F0').pack(pady=10)
         for category, amount in expense_categories.items():
-            tk.Label(stats_window, text=f"  {category}: {amount}", bg='#f0f8ff').pack()
+            tk.Label(stats_window, text=f"  {category}: {amount}", bg='#FFF8F0').pack()
 
         fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
@@ -326,26 +341,26 @@ class PersonalAccountingApp:
         info_window = tk.Toplevel()
         info_window.title("个人信息")
         info_window.geometry("400x350")  # 增加窗口高度以容纳新信息
-        info_window.configure(bg='#f0f8ff')
+        info_window.configure(bg='#FFF8F0')
 
         label_font = font.Font(family='Arial', size=12)
 
-        tk.Label(info_window, text="姓名:", bg='#f0f8ff', font=label_font).grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(info_window, text="姓名:", bg='#FFF8F0', font=label_font).grid(row=0, column=0, padx=5, pady=5)
         self.name_entry = tk.Entry(info_window, width=30, font=label_font)
         self.name_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        tk.Label(info_window, text="邮箱:", bg='#f0f8ff', font=label_font).grid(row=1, column=0, padx=5, pady=5)
+        tk.Label(info_window, text="邮箱:", bg='#FFF8F0', font=label_font).grid(row=1, column=0, padx=5, pady=5)
         self.email_entry = tk.Entry(info_window, width=30, font=label_font)
         self.email_entry.grid(row=1, column=1, padx=5, pady=5)
 
-        tk.Label(info_window, text="电话:", bg='#f0f8ff', font=label_font).grid(row=2, column=0, padx=5, pady=5)
+        tk.Label(info_window, text="电话:", bg='#FFF8F0', font=label_font).grid(row=2, column=0, padx=5, pady=5)
         self.phone_entry = tk.Entry(info_window, width=30, font=label_font)
         self.phone_entry.grid(row=2, column=1, padx=5, pady=5)
 
         # 显示记账总笔数
         total_records = len(load_records())  # 获取总记录数
-        tk.Label(info_window, text="记账总笔数:", bg='#f0f8ff', font=label_font).grid(row=3, column=0, padx=5, pady=5)
-        tk.Label(info_window, text=str(total_records), bg='#f0f8ff', font=label_font).grid(row=3, column=1, padx=5, pady=5)
+        tk.Label(info_window, text="记账总笔数:", bg='#FFF8F0', font=label_font).grid(row=3, column=0, padx=5, pady=5)
+        tk.Label(info_window, text=str(total_records), bg='#FFF8F0', font=label_font).grid(row=3, column=1, padx=5, pady=5)
 
         save_button = tk.Button(info_window, text="保存信息", command=self.save_info, bg="#4CAF50", fg="white", font=label_font)
         save_button.grid(row=4, column=1, padx=5, pady=10)
@@ -364,10 +379,10 @@ class PersonalAccountingApp:
         cj_window = tk.Toplevel()
         cj_window.title("更改账本")
         cj_window.geometry("500x300")
-        cj_window.configure(bg='#f0f8ff')
+        cj_window.configure(bg='#FFF8F0')
         label_font = font.Font(family='Arial', size=12)
 
-        tk.Label(cj_window, text="选择要使用的账本", bg='#f0f8ff', font=('Arial', 12)).pack(pady=10)
+        tk.Label(cj_window, text="选择要使用的账本", bg='#FFF8F0', font=('Arial', 12)).pack(pady=10)
         j1_button = tk.Button(cj_window, text="账本1", command=self.set_json1, bg="#4CAF50", fg="white",font=label_font)
         j1_button.pack(pady=10)
         j2_button = tk.Button(cj_window, text="账本2", command=self.set_json2, bg="#4CAF50", fg="white", font=label_font)
