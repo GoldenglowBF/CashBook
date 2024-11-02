@@ -6,6 +6,7 @@ from modules.statistics import calculate_statistics
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib as mpl
+from datetime import datetime, timedelta
 
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 mpl.rcParams['axes.unicode_minus'] = False
@@ -82,6 +83,16 @@ class PersonalAccountingApp:
         self.note_entry = tk.Entry(frame, width=40, font=label_font)
         self.note_entry.grid(row=3, column=1, padx=5, pady=5)
 
+        # 添加定期收入/支出选项
+        self.is_recurring_var = tk.BooleanVar()
+        self.frequency_var = tk.StringVar(value="选择频率")
+
+        tk.Checkbutton(frame, text="定期收入/支出", variable=self.is_recurring_var, bg='#f0f8ff').grid(row=4, column=0, padx=5, pady=5, columnspan=2)
+        tk.Label(frame, text="频率:", font=label_font, bg='#f0f8ff').grid(row=5, column=0, padx=5, pady=5)
+        frequency_options = ["每日", "每周", "每月"]
+        self.frequency_menu = tk.OptionMenu(frame, self.frequency_var, *frequency_options)
+        self.frequency_menu.grid(row=5, column=1, padx=5, pady=5)
+
         button_frame = tk.Frame(root, bg='#f0f8ff')
         button_frame.pack(pady=20)
 
@@ -104,18 +115,41 @@ class PersonalAccountingApp:
     def submit_record(self):
         date = self.date_entry.get()
         amount = float(self.amount_entry.get())
-        category = self.category_var.get()  # 获取选择的类别
-
+        category = self.category_var.get()
         note = self.note_entry.get()
+        is_recurring = self.is_recurring_var.get()
+        frequency = self.get_frequency() if is_recurring else None
 
-        add_record(date, amount, category, note)
+        add_record(date, amount, category, note, is_recurring, frequency)
 
         self.date_entry.delete(0, tk.END)
         self.amount_entry.delete(0, tk.END)
-        self.category_var.set("选择类别")  # 重置类别选择
+        self.category_var.set("选择类别")
         self.note_entry.delete(0, tk.END)
 
         messagebox.showinfo("成功", "记录已添加！")
+
+    def get_frequency(self):
+        frequency = self.frequency_var.get()
+        if frequency == "每日":
+            return timedelta(days=1)
+        elif frequency == "每周":
+            return timedelta(weeks=1)
+        elif frequency == "每月":
+            return timedelta(days=30)  # 简化处理
+        return None
+
+    def generate_recurring_records(self):
+        today = datetime.now().date()
+        records = load_records()
+        for record in records:
+            if record.get('is_recurring'):
+                frequency = record.get('frequency')
+                next_date = datetime.strptime(record['date'], '%Y-%m-%d').date()
+                while next_date <= today:
+                    next_date += frequency
+                if next_date > today:
+                    add_record(next_date.strftime('%Y-%m-%d'), record['amount'], record['category'], record['note'], is_recurring=True, frequency=frequency)
 
     def create_view_window(self):
         view_window = tk.Toplevel()
