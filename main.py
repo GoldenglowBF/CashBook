@@ -10,40 +10,6 @@ import matplotlib as mpl
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 mpl.rcParams['axes.unicode_minus'] = False
 
-class LoginWindow:
-    def __init__(self):
-        self.login_root = tk.Tk()
-        self.login_root.title("记账本登录")
-        self.login_root.geometry("300x150")
-        self.login_root.configure(bg='#f0f8ff')
-
-        label_font = font.Font(family='Arial', size=12)
-
-        tk.Label(self.login_root, text="用户名:", bg='#f0f8ff', font=label_font).grid(row=0, column=0, padx=5, pady=5)
-        self.username_entry = tk.Entry(self.login_root, width=20, font=label_font)
-        self.username_entry.grid(row=0, column=1, padx=5, pady=5)
-
-        tk.Label(self.login_root, text="密码:", bg='#f0f8ff', font=label_font).grid(row=1, column=0, padx=5, pady=5)
-        self.password_entry = tk.Entry(self.login_root, width=20, show='*', font=label_font)
-        self.password_entry.grid(row=1, column=1, padx=5, pady=5)
-
-        login_button = tk.Button(self.login_root, text="登录", command=self.login, bg="#4CAF50", fg="white", font=label_font)
-        login_button.grid(row=2, column=1, padx=5, pady=10)
-
-    def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        if username == '123456' and password == '123456':
-            self.login_root.destroy()
-            self.open_main_app()
-        else:
-            messagebox.showerror("错误", "用户名或密码错误！")
-
-    def open_main_app(self):
-        root = tk.Tk()
-        app = PersonalAccountingApp(root)
-        root.mainloop()
-
 class PersonalAccountingApp:
     def __init__(self, root):
         self.root = root
@@ -100,6 +66,37 @@ class PersonalAccountingApp:
         # 添加个人信息按钮
         info_button = tk.Button(button_frame, text="个人信息", command=self.create_info_window, bg="#2196F3", fg="white", font=label_font, width=20)
         info_button.grid(row=0, column=4, padx=10)
+
+    def show_login_window(self):
+        # 设置字体
+        title_font = font.Font(family='Arial', size=16, weight='bold')
+        label_font = font.Font(family='Arial', size=12)
+        """显示登录窗口."""
+        login_window = tk.Toplevel(self.root)
+        login_window.title("登录")
+        login_window.geometry("300x250")
+        login_window.configure(bg='#f0f8ff')
+
+        tk.Label(login_window, text="用户名:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        username_entry = tk.Entry(login_window, font=label_font)
+        username_entry.pack(pady=10)
+
+        tk.Label(login_window, text="密码:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        password_entry = tk.Entry(login_window, show="*", font=label_font)
+        password_entry.pack(pady=10)
+
+        def login():
+            username = username_entry.get()
+            password = password_entry.get()
+            if username in self.users and self.users[username] == password:
+                messagebox.showinfo("登录成功", "欢迎回来！")
+                login_window.destroy()
+                self.root.deiconify()  # 显示主窗口
+            else:
+                messagebox.showerror("登录失败", "用户名或密码错误。")
+
+        login_button = tk.Button(login_window, text="登录", command=login, bg="#4CAF50", fg="white", font=label_font, width=20)
+        login_button.pack(pady=10)
 
     def submit_record(self):
         date = self.date_entry.get()
@@ -246,5 +243,8 @@ class PersonalAccountingApp:
         messagebox.showinfo("成功", "个人信息已保存！")
 
 if __name__ == "__main__":
-    login_window = LoginWindow()
-    login_window.login_root.mainloop()
+    root = tk.Tk()
+    app = PersonalAccountingApp(root)
+    app.root.withdraw()  # 隐藏主窗口
+    app.show_login_window()  # 显示登录窗口
+    root.mainloop()
