@@ -68,8 +68,16 @@ class PersonalAccountingApp:
         self.amount_entry.grid(row=1, column=1, padx=5, pady=5)
 
         tk.Label(frame, text="类别:", font=label_font, bg='#f0f8ff').grid(row=2, column=0, padx=5, pady=5)
-        self.category_entry = tk.Entry(frame, width=40, font=label_font)
-        self.category_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        # 定义类别选项
+        self.category_var = tk.StringVar()
+        self.category_var.set("选择类别")  # 设置默认值
+
+        # 创建下拉选择框
+        category_options = ["收入", "支出", "投资", "其他"]  # 这里可以添加更多类别
+        self.category_menu = tk.OptionMenu(frame, self.category_var, *category_options)
+        self.category_menu.grid(row=2, column=1, padx=5, pady=5)
+
 
         tk.Label(frame, text="备注:", font=label_font, bg='#f0f8ff').grid(row=3, column=0, padx=5, pady=5)
         self.note_entry = tk.Entry(frame, width=40, font=label_font)
@@ -93,7 +101,8 @@ class PersonalAccountingApp:
     def submit_record(self):
         date = self.date_entry.get()
         amount = float(self.amount_entry.get())
-        category = self.category_entry.get()
+        category = self.category_var.get()  # 获取选择的类别
+
         note = self.note_entry.get()
 
         add_record(date, amount, category, note)
