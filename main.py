@@ -98,6 +98,43 @@ class PersonalAccountingApp:
         login_button = tk.Button(login_window, text="登录", command=login, bg="#4CAF50", fg="white", font=label_font, width=20)
         login_button.pack(pady=10)
 
+        # 添加注册按钮
+        register_button = tk.Button(login_window, text="注册", command=self.show_register_window, bg="#4CAF50",
+                                    fg="white", font=label_font, width=20)
+        register_button.pack(pady=10)
+
+    def show_register_window(self):
+        # 设置字体
+        title_font = font.Font(family='Arial', size=16, weight='bold')
+        label_font = font.Font(family='Arial', size=12)
+        """显示注册窗口."""
+        register_window = tk.Toplevel(self.root)
+        register_window.title("注册")
+        register_window.geometry("300x250")
+        register_window.configure(bg='#f0f8ff')
+
+        tk.Label(register_window, text="用户名:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        username_entry = tk.Entry(register_window, font=label_font)
+        username_entry.pack(pady=10)
+
+        tk.Label(register_window, text="密码:", font=label_font, bg='#f0f8ff').pack(pady=10)
+        password_entry = tk.Entry(register_window, show="*", font=label_font)
+        password_entry.pack(pady=10)
+
+        def register():
+            username = username_entry.get()
+            password = password_entry.get()
+            if username in self.users:
+                messagebox.showerror("注册失败", "用户名已存在。")
+            else:
+                self.users[username] = password
+                messagebox.showinfo("注册成功", "注册成功！")
+                register_window.destroy()  # 关闭注册窗口
+
+        register_button = tk.Button(register_window, text="注册", command=register, bg="#4CAF50", fg="white",
+                                    font=label_font, width=20)
+        register_button.pack(pady=10)
+
     def submit_record(self):
         date = self.date_entry.get()
         amount = float(self.amount_entry.get())
