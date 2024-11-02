@@ -11,6 +11,8 @@ from modules.view import load_2_json
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib as mpl
+from datetime import datetime
+import numpy as np
 
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 mpl.rcParams['axes.unicode_minus'] = False
@@ -71,11 +73,73 @@ class PersonalAccountingApp:
         # 添加个人信息按钮
         info_button = tk.Button(button_frame, text="个人信息", command=self.create_info_window, bg="#2196F3", fg="white", font=label_font, width=20)
         info_button.grid(row=0, column=4, padx=10)
+        # 添加收支趋势分析按钮
+        trends_button = tk.Button(button_frame, text="收支趋势分析", command=self.create_trend_analysis_window, bg="#FF5722",
+                                  fg="white", font=label_font, width=20)
+        trends_button.grid(row=0, column=5, padx=10)
 
         # 初始化用户字典
         self.userf = {}
         with open('data/un_pw.json','r') as f:
             self.userf = json.load(f)
+
+    def create_trend_analysis_window(self):
+        """创建收支趋势分析窗口"""
+        trend_window = tk.Toplevel()
+        trend_window.title("收支趋势分析")
+        trend_window.geometry("600x400")
+        trend_window.configure(bg='#f0f8ff')
+
+        tk.Label(trend_window, text="开始日期 (YYYY-MM-DD):", bg='#f0f8ff').pack(pady=10)
+        start_date_entry = tk.Entry(trend_window, width=20)
+        start_date_entry.pack(pady=5)
+
+        tk.Label(trend_window, text="结束日期 (YYYY-MM-DD):", bg='#f0f8ff').pack(pady=10)
+        end_date_entry = tk.Entry(trend_window, width=20)
+        end_date_entry.pack(pady=5)
+
+        def generate_trend():
+            start_date = start_date_entry.get()
+            end_date = end_date_entry.get()
+            try:
+                start_date = datetime.strptime(start_date, "%Y-%m-%d")
+                end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            except ValueError:
+                messagebox.showerror("日期格式错误", "请确保日期格式为 YYYY-MM-DD。")
+                return
+
+            records = load_records()
+            monthly_income = {}
+            monthly_expense = {}
+
+            for record in records:
+                record_date = datetime.strptime(record['date'], "%Y-%m-%d")
+                if start_date <= record_date <= end_date:
+                    month = record_date.strftime("%Y-%m")
+                    if record['amount'] > 0:
+                        monthly_income[month] = monthly_income.get(month, 0) + record['amount']
+                    else:
+                        monthly_expense[month] = monthly_expense.get(month, 0) + abs(record['amount'])
+
+            # 确保每个月都有数据，缺失的月份填0
+            all_months = sorted(set(monthly_income.keys()).union(set(monthly_expense.keys())))
+            income_values = [monthly_income.get(month, 0) for month in all_months]
+            expense_values = [monthly_expense.get(month, 0) for month in all_months]
+
+            # 绘制图表
+            plt.figure(figsize=(10, 5))
+            plt.plot(all_months, income_values, label='收入', marker='o')
+            plt.plot(all_months, expense_values, label='支出', marker='o')
+            plt.title('收支趋势分析')
+            plt.xlabel('月份')
+            plt.ylabel('金额')
+            plt.xticks(rotation=45)
+            plt.legend()
+            plt.tight_layout()
+            plt.show()
+
+        trend_button = tk.Button(trend_window, text="生成趋势图", command=generate_trend, bg="#4CAF50", fg="white")
+        trend_button.pack(pady=20)
 
     def show_login_window(self):
         # 设置字体
