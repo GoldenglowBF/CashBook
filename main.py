@@ -67,6 +67,9 @@ class PersonalAccountingApp:
         info_button = tk.Button(button_frame, text="个人信息", command=self.create_info_window, bg="#2196F3", fg="white", font=label_font, width=20)
         info_button.grid(row=0, column=4, padx=10)
 
+        # 初始化用户字典
+        self.users = {}
+
     def show_login_window(self):
         # 设置字体
         title_font = font.Font(family='Arial', size=16, weight='bold')
