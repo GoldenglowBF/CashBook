@@ -74,7 +74,7 @@ class PersonalAccountingApp:
         self.category_var.set("选择类别")  # 设置默认值
 
         # 创建下拉选择框
-        category_options = ["收入", "支出", "投资", "其他"]  # 这里可以添加更多类别
+        category_options = ["饮食", "交通", "服饰", "医疗", "娱乐", "其他"]  # 这里可以添加更多类别
         self.category_menu = tk.OptionMenu(frame, self.category_var, *category_options)
         self.category_menu.grid(row=2, column=1, padx=5, pady=5)
 
