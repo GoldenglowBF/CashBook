@@ -78,7 +78,6 @@ class PersonalAccountingApp:
         self.category_menu = tk.OptionMenu(frame, self.category_var, *category_options)
         self.category_menu.grid(row=2, column=1, padx=5, pady=5)
 
-
         tk.Label(frame, text="备注:", font=label_font, bg='#f0f8ff').grid(row=3, column=0, padx=5, pady=5)
         self.note_entry = tk.Entry(frame, width=40, font=label_font)
         self.note_entry.grid(row=3, column=1, padx=5, pady=5)
@@ -98,6 +97,10 @@ class PersonalAccountingApp:
         delete_button = tk.Button(button_frame, text="删除记录", command=self.create_delete_window, bg="#F44336", fg="white", font=label_font, width=20)
         delete_button.grid(row=0, column=3, padx=10)
 
+        # 添加个人信息按钮
+        info_button = tk.Button(button_frame, text="个人信息", command=self.create_info_window, bg="#2196F3", fg="white", font=label_font, width=20)
+        info_button.grid(row=0, column=4, padx=10)
+
     def submit_record(self):
         date = self.date_entry.get()
         amount = float(self.amount_entry.get())
@@ -109,7 +112,7 @@ class PersonalAccountingApp:
 
         self.date_entry.delete(0, tk.END)
         self.amount_entry.delete(0, tk.END)
-        self.category_entry.delete(0, tk.END)
+        self.category_var.set("选择类别")  # 重置类别选择
         self.note_entry.delete(0, tk.END)
 
         messagebox.showinfo("成功", "记录已添加！")
@@ -206,6 +209,41 @@ class PersonalAccountingApp:
         canvas = FigureCanvasTkAgg(fig, master=stats_window)
         canvas.draw()
         canvas.get_tk_widget().pack(pady=20)
+
+    def create_info_window(self):
+        info_window = tk.Toplevel()
+        info_window.title("个人信息")
+        info_window.geometry("400x350")  # 增加窗口高度以容纳新信息
+        info_window.configure(bg='#f0f8ff')
+
+        label_font = font.Font(family='Arial', size=12)
+
+        tk.Label(info_window, text="姓名:", bg='#f0f8ff', font=label_font).grid(row=0, column=0, padx=5, pady=5)
+        self.name_entry = tk.Entry(info_window, width=30, font=label_font)
+        self.name_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(info_window, text="邮箱:", bg='#f0f8ff', font=label_font).grid(row=1, column=0, padx=5, pady=5)
+        self.email_entry = tk.Entry(info_window, width=30, font=label_font)
+        self.email_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Label(info_window, text="电话:", bg='#f0f8ff', font=label_font).grid(row=2, column=0, padx=5, pady=5)
+        self.phone_entry = tk.Entry(info_window, width=30, font=label_font)
+        self.phone_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        # 显示记账总笔数
+        total_records = len(load_records())  # 获取总记录数
+        tk.Label(info_window, text="记账总笔数:", bg='#f0f8ff', font=label_font).grid(row=3, column=0, padx=5, pady=5)
+        tk.Label(info_window, text=str(total_records), bg='#f0f8ff', font=label_font).grid(row=3, column=1, padx=5, pady=5)
+
+        save_button = tk.Button(info_window, text="保存信息", command=self.save_info, bg="#4CAF50", fg="white", font=label_font)
+        save_button.grid(row=4, column=1, padx=5, pady=10)
+
+    def save_info(self):
+        name = self.name_entry.get()
+        email = self.email_entry.get()
+        phone = self.phone_entry.get()
+        # 这里可以添加保存信息的逻辑，例如保存到文件或数据库
+        messagebox.showinfo("成功", "个人信息已保存！")
 
 if __name__ == "__main__":
     login_window = LoginWindow()
